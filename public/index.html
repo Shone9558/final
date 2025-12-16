@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>情緒音樂盒</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <header>
+        <h1>情緒音樂盒</h1>
+        <p class="subtitle">用音樂陪伴你的心情</p>
+    </header>
+
+    <section class="emotion-section">
+        <h2>選擇你的情緒</h2>
+
+        <div class="emotion-buttons">
+            <button class="emotion-btn happy" data-emotion="happy">😊 開心</button>
+            <button class="emotion-btn sad" data-emotion="sad">😢 難過</button>
+            <button class="emotion-btn relax" data-emotion="relax">😌 放鬆</button>
+            <button class="emotion-btn angry" data-emotion="angry">😠 生氣</button>
+        </div>
+    </section>
+
+    <section class="player-section">
+        <h2>音樂播放區</h2>
+
+        <p id="emotionText" class="emotion-text">請選擇一種情緒開始</p>
+
+        <audio id="musicPlayer" controls>
+            <source id="musicSource" src="" type="audio/mp3" />
+        </audio>
+
+        <div class="wave-container">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
