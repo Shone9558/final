@@ -23,6 +23,25 @@ h1 {
     margin-bottom: 40px;
 }
 
+.emotion-btn {
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.emotion-btn:hover {
+    transform: scale(1.08);
+}
+
+.emotion-icon {
+    width: 80px;     /* 可以依你喜歡調整大小 */
+    height: 80px;
+    border-radius: 12px;
+}
+
 .emotion-buttons {
     display: flex;
     justify-content: center;
