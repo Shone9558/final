@@ -25,13 +25,10 @@
     </section>
 
     <section class="player-section">
-        <h2>音樂播放區</h2>
-
         <p id="emotionText" class="emotion-text">請選擇一種情緒開始</p>
 
-        <audio id="musicPlayer" controls>
-            <source id="musicSource" src="" type="audio/mp3" />
-        </audio>
+        <!-- YouTube 播放器 -->
+        <div id="youtubePlayer"></div>
 
         <div class="wave-container">
             <div class="wave"></div>
@@ -41,6 +38,30 @@
         </div>
     </section>
 
+    <section>
+        <div class="add-music-section">
+            <h3>新增 YouTube 音樂</h3>
+
+            <input id="youtubeInput" type="text" placeholder="貼上 YouTube 連結">
+            <button id="addMusicBtn">加入播放清單</button>
+        </div>
+
+        <button id="randomPlay">隨機播放</button>
+
+        <ul id="playlist"></ul>
+    </section>
+
+    <div id="miniPlayer" class="mini-player hidden">
+        <p id="miniTitle">正在播放：—</p>
+
+        <div class="mini-controls">
+            <button id="miniPlayPause">⏯</button>
+            <button id="miniClose">✖</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
 </body>
 </html>

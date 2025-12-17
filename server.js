@@ -20,3 +20,10 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`後端伺服器啟動成功：http://localhost:${PORT}`);
 });
+
+const emotionBg = {
+    happy: "linear-gradient(135deg, #ffeb99, #ffd84d)",
+    sad: "linear-gradient(135deg, #6fa8dc, #9fc5e8)",
+    relax: "linear-gradient(135deg, #b7e1a1, #93c47d)",
+    angry: "linear-gradient(135deg, #f4b3b3, #e06666)"
+};
