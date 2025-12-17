@@ -1,45 +1,43 @@
+/* ===== 全域設定 ===== */
 body {
     margin: 0;
     font-family: "Noto Sans TC", sans-serif;
-    background: linear-gradient(145deg, #a1c4fd, #c2e9fb);
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
     min-height: 100vh;
     padding: 20px;
     transition: background 0.6s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* ===== 標題區 ===== */
 header {
     text-align: center;
     margin-bottom: 40px;
+    padding: 20px 30px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin: 0;
-    color: #333;
+    color: #ffffff;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.25);
 }
 
+.subtitle {
+    color: #f5f5f5;
+    font-size: 1.2rem;
+}
+
+/* ===== 情緒按鈕區 ===== */
 .emotion-section {
     text-align: center;
     margin-bottom: 40px;
-}
-
-.emotion-btn {
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    border-radius: 12px;
-    transition: transform 0.2s ease;
-}
-
-.emotion-btn:hover {
-    transform: scale(1.08);
-}
-
-.emotion-icon {
-    width: 80px;     /* 可以依你喜歡調整大小 */
-    height: 80px;
-    border-radius: 12px;
 }
 
 .emotion-buttons {
@@ -49,65 +47,157 @@ h1 {
     gap: 15px;
 }
 
+/* 按鈕美化 */
 .emotion-btn {
-    padding: 12px 20px;
-    font-size: 1.1rem;
+    width: 140px;       /* 固定寬度 */
+    height: 140px;      /* 固定高度 */
+    display: flex;      /* 讓內容置中 */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    font-size: 1.2rem;
     border: none;
-    border-radius: 10px;
+    border-radius: 14px;
     cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
+    transition: transform 0.2s, box-shadow 0.25s;
     color: white;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.happy { background: #ffcc33; }
-.sad { background: #6fa8dc; }
-.relax { background: #93c47d; }
-.angry { background: #e06666; }
-
 .emotion-btn:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+}
+.emotion-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+
+/* 按鈕顏色 */
+.happy { background: linear-gradient(120deg,#ffdd55,#ffbb33); }
+.sad { background: linear-gradient(120deg,#7aa7ff,#4e79ff); }
+.relax { background: linear-gradient(120deg,#97e8b5,#64c88a); }
+.angry { background: linear-gradient(120deg,#ff7575,#ff4d4d); }
+
+/* ===== 播放區 ===== */
+.player-section {
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
 
 .emotion-text {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 15px;
-    color: #444;
-}
-
-.player-section {
-    text-align: center;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 audio {
-    width: 80%;
+    width: 90%;
     max-width: 450px;
     margin-bottom: 20px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
 }
 
-/* 音浪動畫 */
+/* ===== 音浪動畫 ===== */
 .wave-container {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    height: 40px;
+    gap: 8px;
+    height: 45px;
+    margin-top: 15px;
 }
 
 .wave {
-    width: 8px;
+    width: 10px;
     height: 20px;
-    background: white;
-    border-radius: 4px;
-    animation: waveAnim 1s infinite ease-in-out;
-    opacity: 0.8;
+    background: rgba(255,255,255,0.8);
+    border-radius: 5px;
+    animation: waveAnim 1.2s infinite ease-in-out;
 }
 
 .wave:nth-child(1) { animation-delay: 0s; }
-.wave:nth-child(2) { animation-delay: 0.15s; }
-.wave:nth-child(3) { animation-delay: 0.3s; }
-.wave:nth-child(4) { animation-delay: 0.45s; }
+.wave:nth-child(2) { animation-delay: 0.2s; }
+.wave:nth-child(3) { animation-delay: 0.4s; }
+.wave:nth-child(4) { animation-delay: 0.6s; }
 
 @keyframes waveAnim {
-    0% { height: 20px; }
-    50% { height: 40px; }
-    100% { height: 20px; }
+    0% { height: 18px; }
+    50% { height: 45px; }
+    100% { height: 18px; }
+}
+
+/* YouTube iframe (隱藏播放器) */
+#youtubePlayer iframe {
+    width: 0;
+    height: 0;
+    border: none;
+}
+/* ===== 情緒背景 ===== */
+body.happy-bg {
+    background: linear-gradient(135deg, #ffe259, #ffa751);
+}
+
+body.sad-bg {
+    background: linear-gradient(135deg, #667db6, #0082c8);
+}
+
+body.relax-bg {
+    background: linear-gradient(135deg, #a8e063, #56ab2f);
+}
+
+body.angry-bg {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+/* ===== 按鈕點擊發光 ===== */
+.emotion-btn.active {
+    box-shadow: 0 0 25px rgba(255,255,255,0.9),
+                0 0 40px rgba(255,255,255,0.6);
+    transform: scale(1.1);
+}
+
+/* ===== 播放區呼吸動畫 ===== */
+.player-section.playing {
+    animation: breathe 2.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0% { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+    50% { box-shadow: 0 0 35px rgba(255,255,255,0.8); }
+    100% { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+}
+
+/* ===== 音浪控制（預設停止） ===== */
+.wave {
+    animation-play-state: paused;
+}
+
+.wave.play {
+    animation-play-state: running;
+}
+
+/* ===== Icon 微動畫 ===== */
+.emotion-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.emotion-btn:hover .emotion-icon {
+    transform: scale(1.15) rotate(-3deg);
 }
