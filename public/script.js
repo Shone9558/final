@@ -1,173 +1,159 @@
-// === 情緒文字與背景 ===
+// === 情緒文字 ===
 const emotionText = {
-    happy: "今天的你閃閃發光！保持開心～",
-    sad: "慢慢來，沒關係，我在陪你。",
-    relax: "深呼吸～讓自己慢慢放鬆下來。",
-    angry: "生氣也沒關係，我們一起冷靜一下。"
+  happy: "今天的你閃閃發光！保持開心～",
+  sad: "慢慢來，沒關係，我在陪你。",
+  relax: "深呼吸～讓自己慢慢放鬆下來。",
+  angry: "生氣也沒關係，我們一起冷靜一下。"
 };
 
+// === 背景 ===
 const emotionBg = {
-    happy: "linear-gradient(135deg, #ffeb99, #ffd84d)",
-    sad: "linear-gradient(135deg, #6fa8dc, #9fc5e8)",
-    relax: "linear-gradient(135deg, #b7e1a1, #93c47d)",
-    angry: "linear-gradient(135deg, #f4b3b3, #e06666)"
+  happy: "linear-gradient(145deg, #ffe259, #ffa751)",
+  sad: "linear-gradient(145deg, #6fa8dc, #9fc5e8)",
+  relax: "linear-gradient(145deg, #93c47d, #b6d7a8)",
+  angry: "linear-gradient(145deg, #e06666, #f4a5a5)"
 };
 
 // === YouTube 播放器 ===
 let player;
-
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player("youtubePlayer", {
-        height: "0",
-        width: "0",
-        videoId: "",
-        playerVars: { autoplay: 1 }
-    });
+  player = new YT.Player("youtubePlayer", {
+    height: "0",
+    width: "0",
+    videoId: "",
+    playerVars: { autoplay: 1 }
+  });
 }
 
-// === 情緒切換 ===
-const buttons = document.querySelectorAll(".emotion-btn");
-const body = document.body;
-const text = document.getElementById("emotionText");
-
+// === 播放清單 ===
 let playlists = {
-    happy: [],
-    sad: [],
-    relax: [],
-    angry: []
+  happy: [],
+  sad: [],
+  relax: [],
+  angry: []
 };
 
 let currentEmotion = null;
 
-buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        currentEmotion = btn.dataset.emotion;
+// 從後端載入
+fetch("/api/getPlaylist")
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      playlists = data.playlists;
+    }
+  });
 
-        body.style.background = emotionBg[currentEmotion];
-        text.textContent = emotionText[currentEmotion];
-
-        renderPlaylist(); // 換清單
-    });
-});
-
-// === YouTube ID 擷取 ===
-function extractYouTubeID(url) {
-    const reg = /v=([^&]+)/;
-    const match = url.match(reg);
-    return match ? match[1] : null;
+function savePlaylist() {
+  fetch("/api/savePlaylist", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ playlists })
+  });
 }
 
 // === DOM ===
+const buttons = document.querySelectorAll(".emotion-btn");
+const body = document.body;
+const text = document.getElementById("emotionText");
 const youtubeInput = document.getElementById("youtubeInput");
 const addMusicBtn = document.getElementById("addMusicBtn");
 const playlistEl = document.getElementById("playlist");
 const randomBtn = document.getElementById("randomPlay");
 
-// === 加入播放清單 ===
-addMusicBtn.addEventListener("click", () => {
-    if (!currentEmotion) {
-        alert("請先選擇情緒！");
-        return;
-    }
-
-    const url = youtubeInput.value.trim();
-    const videoId = extractYouTubeID(url);
-
-    if (!videoId) {
-        alert("請輸入正確的 YouTube 連結！");
-        return;
-    }
-
-    playlists[currentEmotion].push(videoId);
-
-    youtubeInput.value = "";
+// === 情緒切換 ===
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentEmotion = btn.dataset.emotion;
+    body.style.background = emotionBg[currentEmotion];
+    text.textContent = emotionText[currentEmotion];
     renderPlaylist();
+  });
+});
+
+// === 解析 YouTube ID ===
+function extractYouTubeID(url) {
+  const match = url.match(/v=([^&]+)/);
+  return match ? match[1] : null;
+}
+
+// === 加入歌曲 ===
+addMusicBtn.addEventListener("click", () => {
+  if (!currentEmotion) return alert("請先選擇情緒！");
+  const id = extractYouTubeID(youtubeInput.value.trim());
+  if (!id) return alert("請輸入正確的 YouTube 連結");
+
+  playlists[currentEmotion].push(id);
+  youtubeInput.value = "";
+  savePlaylist();
+  renderPlaylist();
 });
 
 // === 渲染播放清單 ===
 function renderPlaylist() {
-    playlistEl.innerHTML = "";
+  playlistEl.innerHTML = "";
+  if (!currentEmotion) return;
 
-    if (!currentEmotion) return;
+  playlists[currentEmotion].forEach((id, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>歌曲 ${index + 1}</span>
+      <button class="play-btn">▶</button>
+      <button class="delete-btn">❌</button>
+    `;
 
-    playlists[currentEmotion].forEach((id, index) => {
-        const li = document.createElement("li");
+    li.querySelector(".play-btn").onclick = () => {
+      player.loadVideoById(id);
+      showMiniPlayer(`歌曲 ${index + 1}`);
+    };
 
-        li.innerHTML = `
-            <span>歌曲 ${index + 1}</span>
-            <button class="play-btn">▶</button>
-            <button class="delete-btn">❌</button>
-        `;
+    li.querySelector(".delete-btn").onclick = () => {
+      playlists[currentEmotion].splice(index, 1);
+      savePlaylist();
+      renderPlaylist();
+    };
 
-        // 播放
-        li.querySelector(".play-btn").onclick = () => {
-            player.loadVideoById(id);
-            player.playVideo();
-            showMiniPlayer(`播放清單歌曲 ${index + 1}`);
-        };
-
-        // 刪除
-        li.querySelector(".delete-btn").onclick = () => {
-            playlists[currentEmotion].splice(index, 1);
-            renderPlaylist();
-        };
-
-        playlistEl.appendChild(li);
-    });
+    playlistEl.appendChild(li);
+  });
 }
 
 // === 隨機播放 ===
 randomBtn.addEventListener("click", () => {
-    if (!currentEmotion) {
-        alert("請先選擇情緒！");
-        return;
-    }
+  if (!currentEmotion) return alert("請先選擇情緒！");
+  const list = playlists[currentEmotion];
+  if (!list.length) return alert("這個情緒還沒有歌");
 
-    const list = playlists[currentEmotion];
-
-    if (list.length === 0) {
-        alert("此情緒還沒有歌曲！");
-        return;
-    }
-
-    const randomId = list[Math.floor(Math.random() * list.length)];
-    player.loadVideoById(randomId);
-    player.playVideo();
-
-    showMiniPlayer(`隨機播放`);
+  const id = list[Math.floor(Math.random() * list.length)];
+  player.loadVideoById(id);
+  showMiniPlayer("隨機播放");
 });
 
-// === 迷你播放器 ===
+// === Mini Player ===
 const miniPlayer = document.getElementById("miniPlayer");
 const miniTitle = document.getElementById("miniTitle");
 const miniPlayPause = document.getElementById("miniPlayPause");
 const miniClose = document.getElementById("miniClose");
 
-let isPlaying = false;
+let isPlaying = true;
 
-function showMiniPlayer(titleText) {
-    miniTitle.textContent = `正在播放：${titleText}`;
-    miniPlayer.classList.remove("hidden");
-    isPlaying = true;
+function showMiniPlayer(title) {
+  miniTitle.textContent = "正在播放：" + title;
+  miniPlayer.classList.remove("hidden");
+  miniPlayPause.textContent = "⏸";
+}
+
+miniPlayPause.onclick = () => {
+  if (isPlaying) {
+    player.pauseVideo();
+    miniPlayPause.textContent = "▶";
+  } else {
+    player.playVideo();
     miniPlayPause.textContent = "⏸";
-}
+  }
+  isPlaying = !isPlaying;
+};
 
-function hideMiniPlayer() {
-    miniPlayer.classList.add("hidden");
-}
-
-miniPlayPause.addEventListener("click", () => {
-    if (isPlaying) {
-        player.pauseVideo();
-        miniPlayPause.textContent = "▶";
-    } else {
-        player.playVideo();
-        miniPlayPause.textContent = "⏸";
-    }
-    isPlaying = !isPlaying;
-});
-
-miniClose.addEventListener("click", () => {
-    hideMiniPlayer();
-    player.stopVideo();
-});
+miniClose.onclick = () => {
+  miniPlayer.classList.add("hidden");
+  player.stopVideo();
+};

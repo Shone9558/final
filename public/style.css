@@ -1,100 +1,158 @@
+/* ===== 全域設定 ===== */
 body {
     margin: 0;
     font-family: "Noto Sans TC", sans-serif;
-    background: linear-gradient(145deg, #a1c4fd, #c2e9fb);
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
     min-height: 100vh;
     padding: 20px;
     transition: background 0.6s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* ===== 標題區 ===== */
 header {
     text-align: center;
     margin-bottom: 40px;
+    padding: 20px 30px;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin: 0;
-    color: #333;
+    color: #ffffff;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.25);
 }
 
-.emotion-section {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
+/* ===== 情緒按鈕區 ===== */
 .emotion-buttons {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 15px;
+    margin-bottom: 40px;
 }
 
-/* 按鈕大小統一 */
+/* 情緒按鈕（統一版本） */
 .emotion-btn {
-    padding: 14px 28px;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
     font-size: 1.2rem;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
     color: white;
-    width: 130px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.25s, box-shadow 0.25s;
 }
-
-.happy { background: #ffcc33; }
-.sad { background: #6fa8dc; }
-.relax { background: #93c47d; }
-.angry { background: #e06666; }
 
 .emotion-btn:hover {
-    transform: scale(1.05);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35);
 }
 
-.emotion-text {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    color: #444;
+.emotion-btn.active {
+    box-shadow: 0 0 25px rgba(255,255,255,0.9),
+                0 0 40px rgba(255,255,255,0.6);
+    transform: scale(1.1);
 }
 
+/* 情緒 icon */
+.emotion-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.emotion-btn:hover .emotion-icon {
+    transform: scale(1.15) rotate(-3deg);
+}
+
+/* 情緒顏色 */
+.happy { background: linear-gradient(120deg,#ffdd55,#ffbb33); }
+.sad { background: linear-gradient(120deg,#7aa7ff,#4e79ff); }
+.relax { background: linear-gradient(120deg,#97e8b5,#64c88a); }
+.angry { background: linear-gradient(120deg,#ff7575,#ff4d4d); }
+
+/* ===== 播放區 ===== */
 .player-section {
     text-align: center;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
 
-/* 音浪動畫 */
+.player-section.playing {
+    animation: breathe 2.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0% { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+    50% { box-shadow: 0 0 35px rgba(255,255,255,0.8); }
+    100% { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+}
+
+#emotionText {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ===== 音浪動畫 ===== */
 .wave-container {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    height: 40px;
+    gap: 8px;
+    height: 45px;
+    margin-top: 15px;
 }
 
 .wave {
-    width: 8px;
+    width: 10px;
     height: 20px;
-    background: white;
-    border-radius: 4px;
-    animation: waveAnim 1s infinite ease-in-out;
-    opacity: 0.8;
+    background: rgba(255,255,255,0.8);
+    border-radius: 5px;
+    animation: waveAnim 1.2s infinite ease-in-out;
+    animation-play-state: paused;
 }
 
-.wave:nth-child(1) { animation-delay: 0s; }
-.wave:nth-child(2) { animation-delay: 0.15s; }
-.wave:nth-child(3) { animation-delay: 0.3s; }
-.wave:nth-child(4) { animation-delay: 0.45s; }
+.wave.play {
+    animation-play-state: running;
+}
 
 @keyframes waveAnim {
-    0% { height: 20px; }
-    50% { height: 40px; }
-    100% { height: 20px; }
+    0% { height: 18px; }
+    50% { height: 45px; }
+    100% { height: 18px; }
 }
 
+/* ===== YouTube iframe ===== */
 #youtubePlayer iframe {
     width: 0;
     height: 0;
+    border: none;
 }
 
-/* 新增歌曲 UI */
+/* ===== 新增歌曲 ===== */
 .add-music-section {
     margin-top: 20px;
     text-align: center;
@@ -117,12 +175,11 @@ h1 {
     cursor: pointer;
 }
 
-/* 播放清單 */
+/* ===== 播放清單 ===== */
 #playlist {
     list-style: none;
     padding: 0;
     margin-top: 20px;
-    text-align: center;
 }
 
 #playlist li {
@@ -131,8 +188,8 @@ h1 {
     width: 80%;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 10px;
-    cursor: pointer;
 }
+
 .play-btn, .delete-btn {
     margin-left: 10px;
     padding: 4px 8px;
@@ -144,6 +201,7 @@ h1 {
 .play-btn { background: #6fa8dc; color: white; }
 .delete-btn { background: #e06666; color: white; }
 
+/* ===== 隨機播放 ===== */
 #randomPlay {
     margin: 10px auto;
     display: block;
@@ -154,7 +212,8 @@ h1 {
     color: white;
     cursor: pointer;
 }
-/* 迷你播放視窗 */
+
+/* ===== 迷你播放器 ===== */
 .mini-player {
     position: fixed;
     right: 20px;
@@ -166,7 +225,6 @@ h1 {
     border-radius: 12px;
     color: white;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 9999;
 }
 
@@ -174,24 +232,4 @@ h1 {
     opacity: 0;
     pointer-events: none;
     transform: translateY(20px);
-}
-
-.mini-controls {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.mini-controls button {
-    padding: 6px 10px;
-    background: #ffffff22;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.mini-controls button:hover {
-    background: #ffffff44;
 }
