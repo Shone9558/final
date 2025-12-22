@@ -1,44 +1,23 @@
-import { useEffect, useState } from "react";
-import Header from "./components/Header";
-import EmotionButtons from "./components/EmotionButtons";
-import PlayerSection from "./components/PlayerSection";
-import Playlist from "./components/Playlist";
-import MiniPlayer from "./components/MiniPlayer";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
-  const [emotion, setEmotion] = useState(null);
-
-  const [playlists, setPlaylists] = useState({
-    happy: [],
-    sad: [],
-    relax: [],
-    angry: []
-  });
-
-  const [currentVideo, setCurrentVideo] = useState(null);
-
   return (
-    <>
-      <Header />
-
-      <EmotionButtons
-        emotion={emotion}
-        setEmotion={setEmotion}
-      />
-
-      <PlayerSection emotion={emotion} />
-
-      <Playlist
-        emotion={emotion}
-        playlists={playlists}
-        setPlaylists={setPlaylists}
-        setCurrentVideo={setCurrentVideo}
-      />
-
-      <MiniPlayer
-        videoId={currentVideo}
-        setCurrentVideo={setCurrentVideo}
-      />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
