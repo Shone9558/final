@@ -8,11 +8,7 @@ export default function Playlist() {
     const url = prompt("輸入 YouTube 連結或 11 碼影片ID");
     if (!url) return;
 
-    try {
-      addSongToEmotion(currentEmotion, url);
-    } catch (e) {
-      alert(e.message);
-    }
+    addSongToEmotion(currentEmotion, url).catch((e) => alert(e.message));
   }
 
   return (
@@ -20,13 +16,16 @@ export default function Playlist() {
       <h3>{currentEmotion} 播放清單</h3>
       <button onClick={addVideo}>➕ 加入歌曲</button>
 
-      <ul>
-              {list.map((song, i) => (
-        <li key={song.id + i}>
-          <span>{song.title}</span>
-          <button onClick={() => playAt(currentEmotion, i)}>▶</button>
-          <button onClick={() => removeSongAt(currentEmotion, i)}>❌</button>
-        </li>
+      <ul style={{ paddingLeft: 16 }}>
+        {list.map((song, i) => (
+          <li key={(song?.id || "song") + i} style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
+            <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {song?.title || `YouTube：${song?.id}`}
+            </span>
+
+            <button onClick={() => playAt(currentEmotion, i)}>▶</button>
+            <button onClick={() => removeSongAt(currentEmotion, i)}>❌</button>
+          </li>
         ))}
       </ul>
     </div>
