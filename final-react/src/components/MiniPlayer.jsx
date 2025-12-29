@@ -2,22 +2,24 @@ import { usePlayer } from "../context/PlayerContext";
 
 export default function MiniPlayer() {
   const {
-  nowPlaying,
-  currentSong,
-  progress,
-  seekTo,
-  volume,
-  muted,
-  setVolume,
-  toggleMute,
-  playMode,
-  togglePlayMode,
-  togglePlay,
-  playNext,
-  playPrev,
-  closePlayer,
-} = usePlayer();
+    nowPlaying,
+    currentSong,
+    progress,
+    seekTo,
+    volume,
+    muted,
+    setVolume,
+    toggleMute,
+    playMode,
+    togglePlayMode,
+    togglePlay,
+    playNext,
+    playPrev,
+    closePlayer,
 
+    // ✅ NEW: 來自 PlayerContext
+    vizBars,
+  } = usePlayer();
 
   if (!nowPlaying.isOpen || !currentSong) return null;
 
@@ -49,6 +51,36 @@ export default function MiniPlayer() {
         }}
       >
         正在播放：{currentSong.title}
+      </div>
+
+      {/* ✅ NEW: 音量動畫（播放中會跳） */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          gap: 5,
+          height: 36,
+          padding: "6px 10px",
+          borderRadius: 12,
+          background: "rgba(255,255,255,.10)",
+          border: "1px solid rgba(255,255,255,.10)",
+          overflow: "hidden",
+        }}
+        aria-hidden="true"
+      >
+        {(vizBars || Array.from({ length: 22 }, () => 0.12)).map((b, i) => (
+          <span
+            key={i}
+            style={{
+              width: 5,
+              borderRadius: 999,
+              background: "rgba(255,255,255,.85)",
+              height: `${Math.round(6 + (nowPlaying.isPlaying ? b : 0.12) * 28)}px`,
+              transition: "height 120ms linear",
+              opacity: 0.9,
+            }}
+          />
+        ))}
       </div>
 
       {/* 進度條 */}
@@ -107,7 +139,6 @@ export default function MiniPlayer() {
             style={{ width: 80 }}
           />
         </div>
-
       </div>
     </div>
   );

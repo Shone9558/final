@@ -311,6 +311,12 @@ h1 {
   }
 }
 
-body {
-  background: radial-gradient(circle at top, #8d8c8c, #363636);
+:root{
+  --emotion-bg: var(--bg);
 }
+
+body{
+  background: var(--emotion-bg);
+  transition: background 600ms ease;
+}
+

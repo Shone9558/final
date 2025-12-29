@@ -219,11 +219,55 @@ export function PlayerProvider({ children }) {
   const [progress, setProgress] = useState({ currentTime: 0, duration: 0 });
 
   /* ---- volume ---- */
-  const [volume, setVolumeState] = useState(() => {
-    const v = Number(localStorage.getItem("player_volume"));
-    return isFinite(v) ? v : 80;
-  });
   const [muted, setMuted] = useState(false);
+
+  const [volume, setVolumeState] = useState(() => {
+  const v = Number(localStorage.getItem("player_volume"));
+  return isFinite(v) ? v : 80;
+});
+  /* ---- emotion background theme ---- */
+  const EMOTION_BG = {
+    happy: "linear-gradient(135deg, #FFE29F 0%, #FFA99F 40%, #FFD1FF 100%)",
+    sad: "linear-gradient(135deg, #74ebd5 0%, #9face6 100%)",
+    relax: "linear-gradient(135deg, #C2FFD8 0%, #465EFB 100%)",
+    angry: "linear-gradient(135deg, #ff512f 0%, #dd2476 100%)",
+  };
+
+  // currentEmotion 變更時：更新全站背景（用 CSS 變數）
+  useEffect(() => {
+    const bg = EMOTION_BG[currentEmotion] || "var(--bg)";
+    document.body.dataset.emotion = currentEmotion; // 可選：讓你 CSS selector 用
+    document.documentElement.style.setProperty("--emotion-bg", bg);
+  }, [currentEmotion]);
+
+  /* ---- visualizer bars (YouTube: fake but looks good) ---- */
+  const BAR_COUNT = 22;
+  const [vizBars, setVizBars] = useState(() => Array(BAR_COUNT).fill(0.12));
+
+  useEffect(() => {
+    // 不播放：回到低幅度（看起來像待機）
+    if (!nowPlaying.isPlaying) {
+      setVizBars((prev) => prev.map(() => 0.12));
+      return;
+    }
+
+    // 播放中：定時更新 bar
+    const t = setInterval(() => {
+      setVizBars((prev) =>
+        prev.map((p, i) => {
+          const volFactor = Math.max(0.15, Math.min(1, volume / 100));
+          const base = 0.10 + volFactor * 0.25;
+          const bias = (i % 6) * 0.02;
+          const target = Math.min(1, base + bias + Math.random() * 0.75);
+          const eased = p * 0.60 + target * 0.40; // 平滑
+          return Math.max(0.08, Math.min(1, eased));
+        })
+      );
+    }, 120);
+
+    return () => clearInterval(t);
+  }, [nowPlaying.isPlaying, volume]);
+
 
   /* ---- YouTube init ---- */
   useEffect(() => {
@@ -266,7 +310,6 @@ export function PlayerProvider({ children }) {
     if (window.YT?.Player) window.onYouTubeIframeAPIReady();
   }, [volume]);
 
-  /* ---- progress polling ---- */
   useEffect(() => {
     const t = setInterval(() => {
       if (!readyRef.current || !playerRef.current) return;
@@ -278,9 +321,6 @@ export function PlayerProvider({ children }) {
     return () => clearInterval(t);
   }, [nowPlaying.index]);
 
-  /* =========================
-     Actions
-  ========================= */
   function selectEmotion(emotion) {
     setCurrentEmotion(emotion);
   }
@@ -384,7 +424,6 @@ export function PlayerProvider({ children }) {
 
     setNowPlaying((p) => {
       if (p.emotion !== key) return p;
-      // 停止播放並關閉 mini player
       playerRef.current?.stopVideo?.();
       return { emotion: DEFAULT_EMOTION, index: -1, isOpen: false, isPlaying: false };
     });
@@ -488,7 +527,7 @@ export function PlayerProvider({ children }) {
       muted,
       playMode,
       removeSongAt,
-
+      vizBars,
       // actions
       setPlayMode: setPlayModeSafe,
       selectEmotion,
